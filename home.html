@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en" class="theme-midnight">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelWithUs - Customizable Tours & Travel</title>
+
+    <!-- TailwindCSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+    <!-- Custom CSS for Animations, Carousel, Cursor, and Themes -->
+    <style>
+        /* Theme Colors */
+        .theme-midnight {
+            --bg-color: #0a192f; /* Dark Blue */
+            --accent-color: #f4a261; /* Warm Gold */
+            --secondary-accent: #2a9d8f; /* Sea Green */
+            --text-color: #ffffff; /* White */
+            --button-hover: #e9c46a; /* Lighter Gold */
+        }
+
+        .theme-black-orange {
+            --bg-color: #000000; /* Black */
+            --accent-color: #ff8c00; /* Orange */
+            --secondary-accent: #ffa500; /* Lighter Orange */
+            --text-color: #ffffff; /* White */
+            --button-hover: #ff7f00; /* Darker Orange */
+        }
+
+        /* Apply theme variables */
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Carousel styling */
+        .carousel-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .carousel-track {
+            display: flex;
+            width: 300%; /* 3 slides */
+            height: 100%;
+            animation: slide 18s infinite ease-in-out;
+        }
+
+        .carousel-slide {
+            width: 33.3333%; /* One slide at a time */
+            flex-shrink: 0;
+        }
+
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Keyframe animation for sliding effect */
+        @keyframes slide {
+            0%, 20% {
+                transform: translateX(0%);
+            }
+            33.333%, 53.333% {
+                transform: translateX(-33.333%);
+            }
+            66.666%, 86.666% {
+                transform: translateX(-66.666%);
+            }
+            100% {
+                transform: translateX(0%);
+            }
+        }
+
+        /* Custom cursor */
+        .custom-cursor {
+            cursor: url('https://cdn.custom-cursor.com/cursor.png'), auto; /* Replace with your cursor URL */
+        }
+
+        /* Scroll animation */
+        .scroll-animate {
+            transition: transform 0.8s ease-out, opacity 0.8s ease-out;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .scroll-animate.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Transparent text overlay */
+        .hero-text {
+            background-color: rgba(10, 25, 47, 0.6); /* Adjusted for Midnight theme */
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 80%;
+        }
+
+        /* Adjust for Black and Orange theme */
+        .theme-black-orange .hero-text {
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+
+        /* Hover effect for services section */
+        .service-box {
+            position: relative;
+            background-color: rgba(42, 157, 143, 0.8); /* Sea Green with transparency */
+            padding: 20px;
+            border-radius: 8px;
+            transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
+            overflow: hidden;
+        }
+
+        .theme-black-orange .service-box {
+            background-color: rgba(255, 165, 0, 0.8); /* Orange with transparency */
+        }
+
+        .service-box:hover {
+            background-color: var(--secondary-accent);
+            transform: translateY(-10px);
+        }
+
+        .theme-black-orange .service-box:hover {
+            background-color: var(--secondary-accent);
+        }
+
+        .service-box .more-info {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: top 0.3s ease-in-out, opacity 0.3s ease-in-out;
+            opacity: 0;
+        }
+
+        .service-box:hover .more-info {
+            top: 0;
+            opacity: 1;
+        }
+
+        /* Theme Switcher */
+        .theme-switcher {
+            cursor: pointer;
+            width: 40px;
+            height: 20px;
+            background-color: var(--secondary-accent);
+            border-radius: 9999px;
+            position: relative;
+            transition: background-color 0.3s ease;
+        }
+
+        .theme-switcher::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 16px;
+            height: 16px;
+            background-color: var(--bg-color);
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+
+        .theme-black-orange .theme-switcher::after {
+            transform: translateX(20px);
+        }
+
+        /* Extra Content Section Styling */
+        .extra-content {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+    </style>
+
+    <!-- JavaScript for Scroll Animations and Theme Switching -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Scroll Animations
+            const scrollElements = document.querySelectorAll('.scroll-animate');
+
+            const elementInView = (el, percentageScroll = 100) => {
+                const elementTop = el.getBoundingClientRect().top;
+                return (elementTop <= window.innerHeight * (percentageScroll / 100));
+            };
+
+            const displayScrollElement = (element) => {
+                element.classList.add('visible');
+            };
+
+            const handleScrollAnimation = () => {
+                scrollElements.forEach((el) => {
+                    if (elementInView(el, 90)) {
+                        displayScrollElement(el);
+                    }
+                });
+            };
+
+            window.addEventListener('scroll', () => {
+                handleScrollAnimation();
+            });
+
+            // Theme Switcher
+            const themeSwitcher = document.getElementById('theme-switcher');
+            const htmlElement = document.documentElement;
+
+            themeSwitcher.addEventListener('click', () => {
+                if (htmlElement.classList.contains('theme-midnight')) {
+                    htmlElement.classList.remove('theme-midnight');
+                    htmlElement.classList.add('theme-black-orange');
+                } else {
+                    htmlElement.classList.remove('theme-black-orange');
+                    htmlElement.classList.add('theme-midnight');
+                }
+            });
+        });
+    </script>
+</head>
+
+<body class="bg-gray-900 text-white custom-cursor">
+
+    <!-- Navbar -->
+    <header class="bg-gray-800 py-4 fixed w-full z-50">
+        <div class="container mx-auto flex justify-between items-center px-4">
+            <h1 class="text-3xl font-bold">TravelWithUs</h1>
+            <nav class="flex items-center space-x-4">
+                <a href="#home" class="hover:text-teal-400 transition">Home</a>
+                <a href="#services" class="hover:text-teal-400 transition">Services</a>
+                <a href="#about" class="hover:text-teal-400 transition">About Us</a>
+                <a href="#contact" class="hover:text-teal-400 transition">Contact</a>
+                <!-- Theme Switcher Toggle -->
+                <div id="theme-switcher" class="ml-4 theme-switcher"></div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section with Auto-Sliding Background Carousel -->
+    <section id="home" class="h-screen flex items-center justify-center relative">
+        <!-- Carousel Background -->
+        <div class="carousel-container">
+            <div class="carousel-track">
+                <!-- 3 sliding images -->
+                <div class="carousel-slide"><img src="ay.webp" alt="Slide 1"></div>
+                <div class="carousel-slide"><img src="ne.jpg" alt="Slide 2"></div>
+                <div class="carousel-slide"><img src="ra.jpg" alt="Slide 3"></div>
+            </div>
+        </div>
+
+        <!-- Hero Content with Transparent Background -->
+        <div class="z-10 text-center hero-text">
+            <h1 class="text-5xl font-bold">Your Customizable Adventure Awaits</h1>
+            <p class="mt-4 text-xl">Tailored Tours for Office Groups and Beyond</p>
+            <a href="#customize" class="mt-8 inline-block bg-teal-600 hover:bg-teal-700 text-white font-semibold px-6 py-3 rounded-lg transition">Start Planning</a>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-16">
+        <div class="container mx-auto text-center">
+            <h2 class="text-4xl font-bold mb-8 scroll-animate">Our Services</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="service-box scroll-animate">
+                    <h3 class="text-2xl font-semibold mb-4">Customizable Tour Plans</h3>
+                    <p>Choose every detail from hotels to activities and food. You have complete control!</p>
+                    <div class="more-info">
+                        <p>Discover our hand-picked locations and create the perfect travel plan today!</p>
+                    </div>
+                </div>
+                <div class="service-box scroll-animate">
+                    <h3 class="text-2xl font-semibold mb-4">Corporate Retreats</h3>
+                    <p>Tailored packages for office teams to relax, bond, and recharge.</p>
+                    <div class="more-info">
+                        <p>Help your team recharge and strengthen their bonds with our retreats!</p>
+                    </div>
+                </div>
+                <div class="service-box scroll-animate">
+                    <h3 class="text-2xl font-semibold mb-4">Adventure Packages</h3>
+                    <p>Exciting adventure tours for thrill-seekers, from trekking to rafting.</p>
+                    <div class="more-info">
+                        <p>Embark on thrilling adventures designed for adrenaline lovers!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Us Section -->
+    <section id="about" class="py-16 bg-gray-800">
+        <div class="container mx-auto text-center">
+            <h2 class="text-4xl font-bold mb-8 scroll-animate">About Us</h2>
+            <p class="text-xl max-w-2xl mx-auto scroll-animate">
+                We are a passionate travel company, offering customizable tours for office groups and travelers alike. Our goal is to provide unforgettable experiences tailored to your specific needs.
+            </p>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-16">
+        <div class="container mx-auto text-center">
+            <h2 class="text-4xl font-bold mb-8 scroll-animate">Contact Us</h2>
+            <p class="text-xl mb-8 scroll-animate">Feel free to get in touch with us through the following methods:</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-gray-800 p-6 rounded-lg shadow-lg scroll-animate">
+                    <h3 class="text-2xl font-semibold mb-4">WhatsApp</h3>
+                    <p><a href="https://wa.me/your-number" class="text-teal-500 hover:underline">Message us on WhatsApp</a></p>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-lg shadow-lg scroll-animate">
+                    <h3 class="text-2xl font-semibold mb-4">Facebook</h3>
+                    <p><a href="https://facebook.com/your-page" class="text-teal-500 hover:underline">Find us on Facebook</a></p>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-lg shadow-lg scroll-animate">
+                    <h3 class="text-2xl font-semibold mb-4">Visit Us</h3>
+                    <p>123 Travel Lane, Adventure City, Country</p>
+                    <p>Mon - Fri: 9am - 6pm</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Extra Content Section -->
+    <section class="py-16 extra-content">
+        <div class="container mx-auto text-center">
+            <h2 class="text-4xl font-bold mb-8 scroll-animate">Discover More Adventures</h2>
+            <p class="text-xl max-w-2xl mx-auto scroll-animate">
+                Explore our blog for travel tips, destination guides, and more exciting offers! Let us help you plan your next unforgettable journey.
+            </p>
+            <!-- You can add more content here, such as blog previews, testimonials, or gallery -->
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 py-6">
+        <div class="container mx-auto text-center">
+            <p class="text-gray-500">&copy; 2024 TravelWithUs. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
